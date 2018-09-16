@@ -1,0 +1,17 @@
+table{
+    width: 78%;
+    margin-left: 8.7%;
+    border-collapse: collapse;
+  }
+  
+td{
+    border: 1.8px solid #CECECE;
+    width: 3%;
+    height: 22px;
+    font-weight: bold;
+}
+
+td:hover {
+    border: 3px solid #217346;
+    cursor: cell;
+}
