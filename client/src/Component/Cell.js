@@ -4,8 +4,7 @@ import "../style/Cell.css"
 
 export class Cell extends Component {
   render() {
-
-    if(this.props.inModified && this.props.whosModified === this.props.index) {
+    if((this.props.inModified) && (this.props.whosModified === this.props.index)) {
       return (
         <td>
           <input
@@ -17,8 +16,11 @@ export class Cell extends Component {
         </td>
       )} else {
         return (
-          <td data-number={Math.floor(this.props.number)} onClick={this.props.toModified} className={this.props.index}>
-            {Math.floor(this.props.number)}
+          <td data-number={Math.round(this.props.number * 100)/100} 
+          onClick={this.props.toModified} 
+          data-index={this.props.index}
+          >
+            {Math.round(this.props.number * 100)/100}
           </td>
         )}
       }

@@ -1,65 +1,60 @@
 import React, { Component } from 'react';
 import './style/App.css';
-import axios from "axios";
 import Graph from "./Component/Graph"
 import Table from './Component/Table';
 
+import { connect } from 'react-redux';
+import { requestData } from "./actions/requestAction";
+
+
 class App extends Component {
   state = {
-    dataFullOne: [],
-    dataFullTwo: [],
     data: [],
     secondsElapsed: 0,
     inModified: false,
     whosModified: null,
     intervalId: () => {},
     valueNumber: "",
+    test:""
   }
 
   componentDidMount() {
-    let intervalId = setInterval(this.testfunction, 1000);
+    this.props.requestData();
+    let intervalId = setInterval(this.managementData, 1000);
     this.setState({ intervalId: intervalId })
-    this.getDataFromServer()
   }
 
-  getDataFromServer = () => {
-    axios.get("http://127.0.0.1:8000/")
-      .then(response => {
-        // console.log(response.data)
-        let dataOne = [];
-        let dataTwo = [];
-        response.data.map((element, index) => {
-          dataOne.push(Object.assign({x: index, y:element.stocks.CAC40}))
-          dataTwo.push(Object.assign({x: index, y:element.stocks.NASDAQ}))
-        })
-        this.setState({
-          dataFullOne : dataOne.slice(0,1000),
-          dataFullTwo : dataTwo.slice(0,1000) 
-        })
-        })
-      .catch(error => console.log(error))
-  }
-
-  testfunction = () => {
-    this.setState({secondsElapsed: this.state.secondsElapsed + 1});
-    this.setState({data : 
-    [this.state.dataFullOne.slice(this.state.secondsElapsed, this.state.secondsElapsed+20), 
-    this.state.dataFullTwo.slice(this.state.secondsElapsed, this.state.secondsElapsed+20)]})
+  managementData = () => {
+    const {secondsElapsed} = this.state;
+    const {dataCAC40, dataNASDAQ} = this.props.data;
+    this.setState({secondsElapsed: secondsElapsed + 1});
+    this.setState({data :
+    [dataCAC40.slice(secondsElapsed, secondsElapsed+20), 
+    dataNASDAQ.slice(secondsElapsed, secondsElapsed+20)]})
   }
 
   toModified = (e) => {
-    this.setState({inModified: true, whosModified: e.target.className, valueNumber: e.target.dataset.number})
+    this.setState({inModified: true, whosModified: e.target.dataset.index, valueNumber: e.target.dataset.number})
     clearInterval(this.state.intervalId)
   }
 
   onChangeValue = (e) => {
     const {whosModified, valueNumber, data} = this.state;
     this.setState({valueNumber: e.target.value})
+    console.log(data)
       if(parseInt(whosModified) < 20) {
-        console.log("okkk")
-        let newsNumber = data[0][whosModified].y = valueNumber;
-        // console.log(newsNumber);
-        // this.setState({data : [...data, data[0].splice([whosModified].y, 1, parseInt(valueNumber))]})
+        let copy = Object.assign([], data[0]);
+        copy[whosModified].y = valueNumber;
+        console.log(copy)
+        let newData = JSON.parse(JSON.stringify(this.state.data));
+        newData[0][whosModified].y = valueNumber;
+    
+        this.setState({ data: newData });
+
+        // let copy1 = copy[0][whosModified].y = valueNumber;
+        // this.setState({data: copy})
+        // console.log(copy)
+        // this.setState({data: [...data, data[0][whosModified].y = valueNumber]})
       } else {
         let newsNumberTwo = data[1][whosModified-20].y = valueNumber;
       }
@@ -67,37 +62,37 @@ class App extends Component {
 
   keyPress = (e) => {
     if (e.key==="Enter") {
-      let intervalId = setInterval(this.testfunction, 1000);
+      let intervalId = setInterval(this.managementData, 1000);
       this.setState({ inModified:false, intervalId: intervalId })
     }
   }
 
   render() {
-    const renderGraph = () => {
-      if(this.state.data.length > 1) {
-        return (
-          <div>
-            <Graph data={this.state.data} />
-            <Table
-            keyPress={this.keyPress} 
-            valueNumber={this.state.valueNumber}
-            onChangeValue={this.onChangeValue}
-            whosModified={this.state.whosModified} 
-            inModified={this.state.inModified} 
-            toModified={this.toModified} 
-            data={this.state.data} />
-          </div>
-        ) 
-      }
-    }
-
     return (
       <div className="App">
        <h1>One2Team</h1>
-        {renderGraph()}
+       {this.state.data.length > 1 && 
+       (<div>
+            <Graph data={this.state.data} />
+            <Table
+              keyPress={this.keyPress} 
+              valueNumber={this.state.valueNumber}
+              onChangeValue={this.onChangeValue}
+              whosModified={this.state.whosModified} 
+              inModified={this.state.inModified} 
+              toModified={this.toModified} 
+              data={this.state.data} 
+            />
+        </div>
+        )}
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  data: state.data
+})
+
+export default connect(mapStateToProps, { requestData })(App);
+

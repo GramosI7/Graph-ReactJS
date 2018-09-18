@@ -1,14 +1,16 @@
 table{
-    width: 78%;
-    margin-left: 8.7%;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 3%;
     border-collapse: collapse;
   }
   
 td{
     border: 1.8px solid #CECECE;
-    width: 3%;
+    width: 4.5%;
     height: 22px;
-    font-weight: bold;
+    font-size: 22px;
+    font-weight: 300;
 }
 
 td:hover {

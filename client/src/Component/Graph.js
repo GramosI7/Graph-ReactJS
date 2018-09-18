@@ -22,6 +22,7 @@ const Graph = ({data}) => {
       ];
   return (
     <div className="container__graph">
+    <p>{data[0][0].y}</p>
           <XYPlot
             width={1400}
             height={500}>

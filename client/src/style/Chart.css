@@ -295,3 +295,9 @@
       height: 10px;
       width: 60px;
   }
+
+  .container__graph {
+    /* border: 1px solid black; */
+    margin: auto;
+    /* width: 80%; */
+  }
