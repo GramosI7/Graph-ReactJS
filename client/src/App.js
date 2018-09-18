@@ -43,15 +43,11 @@ class App extends Component {
     this.setState({valueNumber: e.target.value})
     console.log(data)
       if(parseInt(whosModified) < 20) {
-        let copy = Object.assign([], data[0]);
-        copy[whosModified].y = valueNumber;
-        console.log(copy)
-        let newData = JSON.parse(JSON.stringify(this.state.data));
-        newData[0][whosModified].y = valueNumber;
-    
-        this.setState({ data: newData });
-
-        // let copy1 = copy[0][whosModified].y = valueNumber;
+        
+        let newsNumber = data[0][whosModified].y = valueNumber;
+        // let copy = Object.assign([], data);
+        // copy[whosModified].y = valueNumber;
+        // console.log(copy)
         // this.setState({data: copy})
         // console.log(copy)
         // this.setState({data: [...data, data[0][whosModified].y = valueNumber]})
